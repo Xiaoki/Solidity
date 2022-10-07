@@ -1,0 +1,44 @@
+//SPDX-License-Identifier: MIT
+//Written by Frank Bloemendal
+
+pragma solidity 0.8.15;
+
+contract SmartWallet{
+
+    address public contractOwner;
+
+    constructor() payable {
+        contractOwner = msg.sender; 
+    }
+
+    modifier _isOwner {
+        require(contractOwner == msg.sender);
+        _;
+    }
+
+    function getBalance() public view returns(uint){
+        return address(this).balance;
+    }
+
+    function transfer(uint _amount, address payable _to) _isOwner public {
+        if(address(this).balance >= _amount){
+            _to.transfer(_amount);
+        }
+    }
+
+    function withdrawal(uint _amount) public _isOwner  {
+        if(_amount <= address(this).balance){
+            payable(msg.sender).transfer(_amount);
+        }
+    }
+
+    function withdrawalAll() public _isOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+                                 
+    receive () external payable {} // if data field is missing.
+
+    fallback() external payable {} // if function call is wrong.
+
+}
