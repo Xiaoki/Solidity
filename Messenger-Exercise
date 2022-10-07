@@ -1,0 +1,36 @@
+//SPDX-License-Identifier: MIT
+//Written by Frank Bloemendal
+
+pragma solidity 0.8.15;
+
+contract MessengerContract {
+
+    string public privateMessage;
+    address public contractOwner;
+    uint private counter;
+
+    constructor(){
+        contractOwner = msg.sender;
+    }
+
+    modifier _ownerOnly() {
+        require(msg.sender == contractOwner);
+        _;
+    }
+
+    function displayMessage() public view returns(string memory){
+        return privateMessage;
+    }
+
+    function displayCounter() public view returns (uint) {
+        return counter;
+    }
+
+    function setPrivateMessage(string memory _newMessage) _ownerOnly public {
+
+            privateMessage = _newMessage;
+            counter++;
+        
+    }
+
+}
